@@ -31,11 +31,15 @@ public class FetchData extends AsyncTask<Void, Void, List<Movie>> {
 
     String data="";
     List<Movie> moviesList;
+    List<Trailer> trailers;
     static List<Movie> movies;
     ArrayList<String> id;
     String dataParsed = "";
     String singleParsed ="";
     public RecyclerView.Adapter adapter;
+    String idMovies=null;
+
+
 
     // JSON Keys
     private static final String MOVIE_TITLE_KEY = "title";
@@ -46,74 +50,76 @@ public class FetchData extends AsyncTask<Void, Void, List<Movie>> {
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected List<Movie> doInBackground(Void... voids) {
-      moviesList = new ArrayList<>();
-       movies=new ArrayList<>();
-       id=new ArrayList<String>();
-        try {
-            URL url=new URL("https://api.themoviedb.org/3/discover/tv?api_key=1523ffb9e470e71f41bb8bdcf3a4a405");
 
-            HttpURLConnection httpURLConnection= (HttpURLConnection) url.openConnection();
+            moviesList = new ArrayList<>();
+            movies = new ArrayList<>();
+            id = new ArrayList<String>();
+            try {
+                URL url = new URL("http://api.themoviedb.org/3/movie/popular?api_key=1523ffb9e470e71f41bb8bdcf3a4a405");
 
-            InputStream inputStream=httpURLConnection.getInputStream();
-            BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(inputStream));
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
-            StringBuilder builder = new StringBuilder();
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-            String line="";
-            while (line!=null){
-                line=bufferedReader.readLine();
-                builder.append(line).append("\n");
-                data=data+line;
+                StringBuilder builder = new StringBuilder();
+
+                String line = "";
+                while (line != null) {
+                    line = bufferedReader.readLine();
+                    builder.append(line).append("\n");
+                    data = data + line;
+                }
+
+                if (builder.length() == 0) {
+                    return null;
+                }
+                Log.e(FetchData.this.toString(), builder.toString());
+                JSONObject jsonObject = new JSONObject(builder.toString());
+
+                Log.e(FetchData.this.toString(), builder.toString());
+
+                // Getting JSON Array node
+                JSONArray results = jsonObject.getJSONArray("results");
+                Log.e(FetchData.this.toString(), String.valueOf(results.length()));
+                for (int i = 0; i < results.length(); i++) {
+                    JSONObject c = results.getJSONObject(i);
+                    String img = "http://image.tmdb.org/t/p/w500/" + c.optString("poster_path");
+                    String title = c.optString("title");
+                    Log.e(FetchData.this.toString(), title);
+                    int vote_average = c.optInt("vote_average");
+                    String plot_synopsis = c.optString("overview");
+                    String date = c.optString("release_date");
+                    String idMovie = c.optString("id");
+
+                    // movies.add((Movie) results.get(i));
+                    id.add(String.valueOf(i));
+                    Log.e(this.toString(), String.valueOf(idMovie));
+                    // https://api.themoviedb.org/3/movie/19404/vedio?api_key=1523ffb9e470e71f41bb8bdcf3a4a405&language=en-US
+                    //  http://api.themoviedb.org/3/movie/19404/videos
+                    Log.e(this.toString(), title + date + img + vote_average + plot_synopsis);
+                    moviesList.add(new Movie(title, date, img, vote_average, plot_synopsis, idMovie));
+                }
+
+
+                movies = moviesList;
+                Log.e(FetchData.this.toString(), String.valueOf(moviesList));
+                // Collections.sort(movies, new MovieComparator());
+
+                adapter = new MovieAdapter(moviesList);
+
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
 
-            if (builder.length() == 0) {
-                return null;
-            }
-            Log.e(FetchData.this.toString(),builder.toString());
-          JSONObject jsonObject=new JSONObject(builder.toString());
-
-            Log.e(FetchData.this.toString(), builder.toString());
-
-            // Getting JSON Array node
-            JSONArray results = jsonObject.getJSONArray("results");
-            Log.e(FetchData.this.toString(), String.valueOf(results.length()));
-            for (int i = 0; i < results.length(); i++) {
-                JSONObject c = results.getJSONObject(i);
-                String img = "http://image.tmdb.org/t/p/w500/" + c.optString("poster_path");
-                String title = c.optString("name");
-                Log.e(FetchData.this.toString(), title);
-                int vote_average = c.optInt("vote_average");
-                String plot_synopsis = c.optString("overview");
-                String date = c.optString("first_air_date");
-
-                // movies.add((Movie) results.get(i));
-                id.add(String.valueOf(i));
-                Log.e(this.toString(), String.valueOf(i));
-
-                Log.e(this.toString(), title + date + img + vote_average + plot_synopsis);
-                moviesList.add(new Movie(title, date, img, vote_average, plot_synopsis));
-            }
+            return moviesList;
 
 
-            movies=moviesList;
-            Log.e(FetchData.this.toString(), String.valueOf(moviesList));
-           // Collections.sort(movies, new MovieComparator());
-
-                adapter=new MovieAdapter(moviesList);
-
-
-
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return moviesList;
     }
 
     @Override

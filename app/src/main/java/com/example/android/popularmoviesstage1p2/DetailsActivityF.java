@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,7 +35,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
 
 import butterknife.ButterKnife;
 
@@ -41,8 +43,8 @@ import butterknife.ButterKnife;
  */
 
 
-public class DetailsActivity extends AppCompatActivity {
-    Context context = DetailsActivity.this;
+public class DetailsActivityF extends AppCompatActivity {
+    Context context = DetailsActivityF.this;
     ImageView img;
     TextView vote;
     TextView title;
@@ -60,7 +62,7 @@ public class DetailsActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
-        ButterKnife.bind(this);
+        setTitle("Favorite");
         title = findViewById(R.id.title);
         img = findViewById(R.id.img);
         vote = findViewById(R.id.vote);
@@ -78,7 +80,7 @@ public class DetailsActivity extends AppCompatActivity {
         } else {
             movie = getIntent().getParcelableExtra("id");
         }
-        Log.e(DetailsActivity.this.toString(), "#" + movie);
+        Log.e(DetailsActivityF.this.toString(), "#" + movie);
         title.setText(movie.getTitle());
         vote.setText(movie.getVote_average() + " ");
         date.setText(movie.getRelease_date());
@@ -86,7 +88,7 @@ public class DetailsActivity extends AppCompatActivity {
         idMovie = movie.getIdMovie();
         https:
 //api.themoviedb.org/3//movie/{id}/reviews
-        Log.e(String.valueOf(DetailsActivity.this), "https://api.themoviedb.org/3/movie/" + movie.getIdMovie() + "/videos?api_key=1523ffb9e470e71f41bb8bdcf3a4a405");
+        Log.e(String.valueOf(DetailsActivityF.this), "https://api.themoviedb.org/3/movie/" + movie.getIdMovie() + "/videos?api_key=1523ffb9e470e71f41bb8bdcf3a4a405");
         playTrailer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -101,32 +103,41 @@ public class DetailsActivity extends AppCompatActivity {
 
                 FetchTrailer fetchReviws = new FetchTrailer(movie.getIdMovie());
                 fetchReviws.execute();
-                Log.e(String.valueOf(DetailsActivity.this), "https://api.themoviedb.org/3/reviws/" + movie.getIdMovie() + "/videos?api_key=1523ffb9e470e71f41bb8bdcf3a4a405");
+                Log.e(String.valueOf(DetailsActivityF.this), "https://api.themoviedb.org/3/reviws/" + movie.getIdMovie() + "/videos?api_key=1523ffb9e470e71f41bb8bdcf3a4a405");
 
 //                Intent websiteIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(fetchReviws.Url));
 //                startActivity(websiteIntent);
             }
         });
+       // star.setVisibility(View.GONE);
+        star.setColorFilter(getApplicationContext().getResources().getColor(R.color.yellow));
         star.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                star.setColorFilter(R.color.yellow);
-                star.setColorFilter(getApplicationContext().getResources().getColor(R.color.yellow));
+                star.setColorFilter(getApplicationContext().getResources().getColor(R.color.gray));
                 final Movie movie1=new Movie(movie.getTitle(), movie.getRelease_date(),movie.getPoster_path(),movie.getVote_average(),  movie.getPlot_synopsis(), movie.getIdMovie());
-                AppExecutor executor = new AppExecutor();
-                executor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDatabase.movieDao().insert(movie1);
+//                AppExecutor executor = new AppExecutor();
+//                executor.execute(new Runnable() {
+//                    @Override
+//                    public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDatabase.movieDao().delete(movie1);
+                            }
+                        });
+//
+               finish();
+//                    }
+//                });
+                finish();
+                Toast.makeText(context, "Deleted from your favorite movies", Toast.LENGTH_SHORT).show();
 
-                    }
-                });
-                Toast.makeText(context, "Added to your favorite movies", Toast.LENGTH_SHORT).show();
-               // insertMovie(movie.getTitle(), String.valueOf(movie.getVote_average()), movie.getPoster_path(), movie.getRelease_date(), movie.getPlot_synopsis(), "true", movie.getIdMovie());
+                // insertMovie(movie.getTitle(), String.valueOf(movie.getVote_average()), movie.getPoster_path(), movie.getRelease_date(), movie.getPlot_synopsis(), "true", movie.getIdMovie());
             }
         });
 
-        Picasso.with(DetailsActivity.this)
+        Picasso.with(DetailsActivityF.this)
                 .load(movie.getPoster_path())
                 .into(img);
 
@@ -265,7 +276,7 @@ public class DetailsActivity extends AppCompatActivity {
                         Intent websiteIntent = new Intent(Intent.ACTION_VIEW, uri);
                         startActivity(websiteIntent);
                     } else {
-                        Log.e(String.valueOf(DetailsActivity.this), "there is no review yet");
+                        Log.e(String.valueOf(DetailsActivityF.this), "there is no review yet");
                         runOnUiThread(new Runnable() {
                             public void run() {
                                 final Toast toast = Toast.makeText(context, "there is no review yet", Toast.LENGTH_SHORT);

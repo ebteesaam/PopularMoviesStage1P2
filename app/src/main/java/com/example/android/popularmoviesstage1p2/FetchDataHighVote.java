@@ -49,7 +49,7 @@ public class FetchDataHighVote extends AsyncTask<Void, Void, List<Movie>> {
        movies=new ArrayList<>();
        id=new ArrayList<String>();
         try {
-            URL url=new URL("https://api.themoviedb.org/3/discover/tv?api_key=1523ffb9e470e71f41bb8bdcf3a4a405");
+            URL url=new URL("http://api.themoviedb.org/3/movie/top_rated?api_key=1523ffb9e470e71f41bb8bdcf3a4a405");
 
             HttpURLConnection httpURLConnection= (HttpURLConnection) url.openConnection();
 
@@ -79,18 +79,18 @@ public class FetchDataHighVote extends AsyncTask<Void, Void, List<Movie>> {
             for (int i = 0; i < results.length(); i++) {
                 JSONObject c = results.getJSONObject(i);
                 String img = "http://image.tmdb.org/t/p/w500/" + c.optString("poster_path");
-                String title = c.optString("name");
-                Log.e(FetchDataHighVote.this.toString(), title);
+                String title = c.optString("title");
+                Log.e(this.toString(), title);
                 int vote_average = c.optInt("vote_average");
                 String plot_synopsis = c.optString("overview");
-                String date = c.optString("first_air_date");
-
+                String date = c.optString("release_date");
+                String idMovie = c.optString("id");
                 // movies.add((Movie) results.get(i));
                 id.add(String.valueOf(i));
                 Log.e(this.toString(), String.valueOf(i));
 
                 Log.e(this.toString(), title + date + img + vote_average + plot_synopsis);
-                moviesList.add(new Movie(title, date, img, vote_average, plot_synopsis));
+                moviesList.add(new Movie(title, date, img, vote_average, plot_synopsis,idMovie));
             }
 
 

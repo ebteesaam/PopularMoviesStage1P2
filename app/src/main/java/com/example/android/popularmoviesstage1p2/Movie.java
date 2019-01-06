@@ -1,5 +1,9 @@
 package com.example.android.popularmoviesstage1p2;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -7,31 +11,39 @@ import android.support.annotation.NonNull;
 /**
  * Created by ebtesam on 22/11/2018 AD.
  */
-
+@Entity(tableName = "movies")
 public class Movie  implements Parcelable{
     String title;
-    String date;
-    String img;
+    String release_date;
+    String poster_path;
     int vote_average;
     String plot_synopsis;
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "id")
+    String idMovie;
 
+    @Ignore
     public Movie() {
     }
 
-    public Movie(String title, String date, String img, int vote_average, String plot_synopsis) {
+    public Movie(String title, String release_date, String poster_path, int vote_average, String plot_synopsis,String idMovie) {
         this.title = title;
-        this.date = date;
-        this.img = img;
+        this.release_date = release_date;
+        this.poster_path = poster_path;
         this.vote_average = vote_average;
         this.plot_synopsis = plot_synopsis;
+        this.idMovie=idMovie;
     }
 
-    public Movie(Parcel parcel) {
-        this.title = parcel.readString();
-        this.date = parcel.readString();
-        this.img = parcel.readString();
-        this.vote_average = parcel.readInt();
-        this.plot_synopsis = parcel.readString();
+
+    protected Movie(Parcel in) {
+        title = in.readString();
+        release_date = in.readString();
+        poster_path = in.readString();
+        vote_average = in.readInt();
+        plot_synopsis = in.readString();
+        idMovie = in.readString();
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -46,7 +58,13 @@ public class Movie  implements Parcelable{
         }
     };
 
+    public String getIdMovie() {
+        return idMovie;
+    }
 
+    public void setIdMovie(String idMovie) {
+        this.idMovie = idMovie;
+    }
 
     public String getTitle() {
         return title;
@@ -56,20 +74,20 @@ public class Movie  implements Parcelable{
         this.title = title;
     }
 
-    public String getDate() {
-        return date;
+    public String getRelease_date() {
+        return release_date;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setRelease_date(String release_date) {
+        this.release_date = release_date;
     }
 
-    public String getImg() {
-        return img;
+    public String getPoster_path() {
+        return poster_path;
     }
 
-    public void setImg(String img) {
-        this.img = img;
+    public void setPoster_path(String poster_path) {
+        this.poster_path = poster_path;
     }
 
     public int getVote_average() {
@@ -96,21 +114,13 @@ public class Movie  implements Parcelable{
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(title);
-        parcel.writeString(date);
-        parcel.writeString(img);
+        parcel.writeString(release_date);
+        parcel.writeString(poster_path);
         parcel.writeInt(vote_average);
         parcel.writeString(plot_synopsis);
+        parcel.writeString(idMovie);
+
     }
 
 
-//    @Override
-//    public int compareTo(@NonNull Movie movie) {
-//
-//        int compare= ((Movie) movie).getVote_average();
-//
-//        //descending order
-//        return  compare- this.vote_average;
-//
-//
-//    }
 }

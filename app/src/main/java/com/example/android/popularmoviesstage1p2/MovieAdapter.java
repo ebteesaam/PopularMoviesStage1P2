@@ -27,18 +27,24 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private Context context;
     private List<Movie> movies;
     private Movie movie;
+   // final private ItemClickListener mItemClickListener;
 
-    public MovieAdapter(Context context, List<Movie> movies) {
+//    public MovieAdapter(Context context, List<Movie> movies) {
+//        this.context = context;
+//        this.movies = movies;
+//    }
+    public MovieAdapter(Context context) {
         this.context = context;
-        this.movies = movies;
-    }
 
+    }
     public MovieAdapter( List<Movie> moviesList) {
         this.movies = moviesList;
 
     }
 
-
+    public interface ItemClickListener {
+        void onItemClickListener(int itemId);
+    }
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup convertView, int viewType) {
         Context context = convertView.getContext();
@@ -56,7 +62,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
        // holder.image.setImageURI(Uri.parse(movie.getImg()));
 
         Picasso.with(context)
-                .load(movie.getImg())
+                .load(movie.getPoster_path())
                 .into(holder.image);
         holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +84,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         return movies.size();
     }
 
+    public void setMovieFav(List<Movie> taskEntries) {
+        movies = taskEntries;
+        notifyDataSetChanged();
+    }
     public class MovieViewHolder extends RecyclerView.ViewHolder{
 
         public ImageView image;
@@ -85,6 +95,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         public MovieViewHolder(View itemView) {
             super(itemView);
            image=itemView.findViewById(R.id.image);
+//            itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    String elementId = movies.get(getAdapterPosition()).getIdMovie();
+//                    mItemClickListener.onItemClickListener(elementId);
+//                }
+//            });
         }
 
         void bind(int listIndex) {
@@ -93,4 +110,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
 
+    public class MovieFViewHolder {
+    }
 }
