@@ -50,7 +50,7 @@ public class FetchData extends AsyncTask<Void, Void, List<Movie>> {
        movies=new ArrayList<>();
        id=new ArrayList<String>();
         try {
-            URL url=new URL("https://api.themoviedb.org/3/discover/tv?api_key=1523ffb9e470e71f41bb8bdcf3a4a405");
+            URL url=new URL("http://api.themoviedb.org/3/movie/popular?api_key=1523ffb9e470e71f41bb8bdcf3a4a405");
 
             HttpURLConnection httpURLConnection= (HttpURLConnection) url.openConnection();
 

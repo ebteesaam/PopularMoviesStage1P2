@@ -1,12 +1,16 @@
 package com.example.android.popularmoviesstage1p2;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +22,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonArrayRequest;
@@ -54,12 +59,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         gridView = findViewById(R.id.list);
         movieList = new ArrayList<>();
-          GridLayoutManager gridLayoutManager = new GridLayoutManager(this,2);
+          GridLayoutManager gridLayoutManager = new GridLayoutManager(this,calculateNoOfColumns(MainActivity.this));
          gridView.setLayoutManager(gridLayoutManager);
         gridView.setHasFixedSize(true);
-        final FetchData fetchData = new FetchData();
-        fetchData.execute();
 
+        ConnectivityManager ConnectionManager=(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo=ConnectionManager.getActiveNetworkInfo();
+        if(networkInfo != null && networkInfo.isConnected()==true )
+        {
+            final FetchData fetchData = new FetchData();
+            fetchData.execute();
+
+            Toast.makeText(MainActivity.this, "Network Available", Toast.LENGTH_LONG).show();
+
+        }
+        else {
+            Toast.makeText(MainActivity.this, "Network Not Available", Toast.LENGTH_LONG).show();
+
+        }
 
 
     }
@@ -71,6 +88,16 @@ public class MainActivity extends AppCompatActivity {
 
         return true;
 
+    }
+
+    public static int calculateNoOfColumns(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int scalingFactor = 200;
+        int noOfColumns = (int) (dpWidth / scalingFactor);
+        if(noOfColumns < 2)
+            noOfColumns = 2;
+        return noOfColumns;
     }
 
     @Override
