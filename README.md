@@ -1,7 +1,5 @@
 # PopularMovies
 
-In this project, this is an app for exchanging learning material in King Abdulaziz university by Ebtesam Harith and Emtenan al Kayyal.
-
 ## Why this project?
 
 Most of us can relate to kicking back on the couch and enjoying a movie with friends and family. In this project, 
