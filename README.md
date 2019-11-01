@@ -10,7 +10,8 @@ I built an app to allow users to discover the most popular movies playing.
   The interfaces of Popular Movies application are designed by android studio and xml language. 
 
 #### Home page
-![](menu.png  | width=100)
+![](menu.png)
+  <img src="menu.png" width="256" height="455">
 ![Home page](popular.png  | width=100)
 ![](highest.png  | width=100)
 #### Movie Review
