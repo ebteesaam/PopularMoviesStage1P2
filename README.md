@@ -12,8 +12,11 @@ I built an app to allow users to discover the most popular movies playing.
 #### Home page
 
   <img src="menu.png" width="200" height="400">
-![Home page](popular.png  | width=100)
-![](highest.png  | width=100)
+  <img src="popular.png" width="200" height="400">
+  <img src="highest.png" width="200" height="400">
+
+
 #### Movie Review
-![](moviereview.png  | width=100)
+
+  <img src="moviereview.png" width="200" height="400">
 
